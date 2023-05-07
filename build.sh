@@ -1,1 +1,1 @@
-pyinstaller main.py --onefile --windowe --icon=assets/icon.ico --name=BDSMTyper --noconsole
+pyinstaller main.py --onefile --windowed --icon=assets/icon.ico --name=BDSMTyper --noconsole

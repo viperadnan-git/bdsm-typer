@@ -3,14 +3,20 @@ from pynput.keyboard import Controller, Key, Listener
 
 
 class BDSMTyper:
-    def __init__(self, mode="normal") -> None:
+    def __init__(self, mode="normal", shortcut_key="Right Ctrl") -> None:
         self.typer = Controller()
         self.listener = None
         self.__modes = ["normal", "ace-editor"]
+        self.__keys_map = {
+            "Esc": Key.esc,
+            "Right Ctrl": Key.ctrl_r,
+            "Right Shift": Key.shift_r,
+        }
         self.set_mode(mode)
+        self.set_shortcut_key(shortcut_key)
 
     def on_release(self, key):
-        if key == Key.ctrl_r:
+        if key == self.__shortcut_key:
             self.paste_from_clipboard()
 
     def paste_from_clipboard(self):
@@ -20,8 +26,7 @@ class BDSMTyper:
             textlines = text.split("\n")
             for line in textlines:
                 with self.typer.pressed(Key.alt):
-                    self.typer.press(Key.backspace)
-                    self.typer.release(Key.backspace)
+                    self.typer.tap(Key.backspace)
                 self.typer.type(line)
         else:
             self.typer.type(text)
@@ -35,6 +40,13 @@ class BDSMTyper:
         else:
             raise Exception("Invalid mode:", mode)
 
+    def set_shortcut_key(self, key):
+        if key in self.__keys_map.keys():
+            self.__shortcut_key = self.__keys_map[key]
+            print("Shortcut key set to:", key)
+        else:
+            raise Exception("Invalid shortcut key:", key)
+
     def start(self):
         if self.listener:
             self.listener.stop()
@@ -46,7 +58,6 @@ class BDSMTyper:
         if self.listener:
             self.listener.stop()
             self.listener = None
-    
 
     @property
     def mode(self):
@@ -55,3 +66,13 @@ class BDSMTyper:
     @property
     def modes(self):
         return self.__modes
+
+    @property
+    def shortcut_key(self):
+        for key, value in self.__keys_map.items():
+            if value == self.__shortcut_key:
+                return key
+
+    @property
+    def shortcut_keys(self):
+        return list(self.__keys_map.keys())
