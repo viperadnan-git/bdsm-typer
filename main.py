@@ -9,7 +9,7 @@ bdsm_typer = BDSMTyper(mode=1)
 
 root = tk.Tk()
 root.title("BDSM Typer")
-root.geometry("500x300")
+root.geometry("500x320")
 root.resizable(False, False)
 
 img = tk.PhotoImage(data=icon)
@@ -38,7 +38,7 @@ updates_label.bind(
 )
 
 tk.Label(
-    root, text="Press right CTRL key to paste from clipboard", font=("Arial", 12)
+    root, text="Press shortcut key to paste from clipboard", font=("Arial", 12)
 ).pack(pady=(0, 20))
 
 
@@ -79,6 +79,20 @@ for key in bdsm_typer.shortcut_keys:
     radio.pack(side=tk.LEFT)
     if key == bdsm_typer.shortcut_key:
         radio.select()
+
+
+line_break_frame = tk.Frame(root)
+line_break_frame.pack(anchor=tk.W, padx=20)
+
+line_break = tk.IntVar(value=1)
+
+tk.Checkbutton(
+    line_break_frame,
+    text="New line",
+    font=("Arial", 12),
+    variable=line_break,
+    command=lambda: bdsm_typer.set_line_break(line_break.get()),
+).pack(side=tk.LEFT)
 
 
 ruuning_label = tk.Label(

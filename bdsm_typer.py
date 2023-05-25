@@ -3,7 +3,9 @@ from pynput.keyboard import Controller, Key, Listener
 
 
 class BDSMTyper:
-    def __init__(self, mode="normal", shortcut_key="Right Ctrl") -> None:
+    def __init__(
+        self, mode="normal", shortcut_key="Right Ctrl", line_break=True
+    ) -> None:
         self.typer = Controller()
         self.listener = None
         self.__modes = ["normal", "ace-editor"]
@@ -12,6 +14,7 @@ class BDSMTyper:
             "Right Ctrl": Key.ctrl_r,
             "Right Shift": Key.shift_r,
         }
+        self.__line_break = line_break
         self.set_mode(mode)
         self.set_shortcut_key(shortcut_key)
 
@@ -28,6 +31,8 @@ class BDSMTyper:
                 with self.typer.pressed(Key.alt):
                     self.typer.tap(Key.backspace)
                 self.typer.type(line)
+                if self.__line_break:
+                    self.typer.tap(Key.enter)
         else:
             self.typer.type(text)
 
@@ -46,6 +51,10 @@ class BDSMTyper:
             print("Shortcut key set to:", key)
         else:
             raise Exception("Invalid shortcut key:", key)
+
+    def set_line_break(self, line_break):
+        self.__line_break = bool(line_break)
+        print("Line break set to:", bool(line_break))
 
     def start(self):
         if self.listener:
