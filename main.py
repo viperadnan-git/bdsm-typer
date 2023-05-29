@@ -4,12 +4,12 @@ import webbrowser
 from assets.icon import icon
 from bdsm_typer import BDSMTyper
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 bdsm_typer = BDSMTyper(mode=1)
 
 root = tk.Tk()
 root.title("BDSM Typer")
-root.geometry("500x320")
+root.geometry("500x350")
 root.resizable(False, False)
 
 img = tk.PhotoImage(data=icon)
@@ -84,14 +84,37 @@ for key in bdsm_typer.shortcut_keys:
 line_break_frame = tk.Frame(root)
 line_break_frame.pack(anchor=tk.W, padx=20)
 
-line_break = tk.IntVar(value=1)
+line_break = tk.BooleanVar(value=bdsm_typer.line_break)
 
 tk.Checkbutton(
     line_break_frame,
-    text="New line",
+    text="Line Break",
     font=("Arial", 12),
     variable=line_break,
     command=lambda: bdsm_typer.set_line_break(line_break.get()),
+).pack(side=tk.LEFT)
+
+
+remove_everything_frame = tk.Frame(root)
+remove_everything_frame.pack(anchor=tk.W, padx=20)
+
+remove_everything = tk.BooleanVar(value=bdsm_typer.remove_everything)
+remove_auto_brackets = tk.BooleanVar(value=bdsm_typer.remove_auto_brackets)
+
+tk.Checkbutton(
+    remove_everything_frame,
+    text="Remove everything before pasting",
+    font=("Arial", 12),
+    variable=remove_everything,
+    command=lambda: bdsm_typer.set_remove_everything(remove_everything.get()),
+).pack(side=tk.LEFT)
+
+tk.Checkbutton(
+    remove_everything_frame,
+    text="Remove Auto Brackets",
+    font=("Arial", 12),
+    variable=remove_auto_brackets,
+    command=lambda: bdsm_typer.set_remove_auto_brackets(remove_auto_brackets.get()),
 ).pack(side=tk.LEFT)
 
 
@@ -119,7 +142,7 @@ def toggle():
 
 tk.Button(
     root, textvariable=is_enabled, font=("Arial", 12, "bold"), command=toggle, width=20
-).pack(pady=15)
+).pack(pady=(15, 10))
 
 
 try:

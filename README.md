@@ -8,6 +8,14 @@ BDSMTyper is a software tool that allows you to copy and paste text on websites 
 -   Supports pasting on any website using the right control key of the keyboard
 -   Works on ACE Editor which is widely used in web-based text editor
 -   Single executable file that can be run with just one click, without any installation
+-   Additional Features:
+    -  Line spacing after each line
+    -  Remove auto completion brackets
+    -  Purge before pasting
+-   Open source and free to use
+-   No installation required
+-   No admin privileges required
+
 
 ## How to use
 

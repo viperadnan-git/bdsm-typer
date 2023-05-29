@@ -1,20 +1,30 @@
 import pyperclip
 from pynput.keyboard import Controller, Key, Listener
+from typing import Union
 
+KEYS_MAP = {
+    "Right Ctrl": Key.ctrl_r,
+    "Esc": Key.esc,
+    "Right Shift": Key.shift_r,
+}
+MODES = ["normal", "ace-editor"]
 
 class BDSMTyper:
     def __init__(
-        self, mode="normal", shortcut_key="Right Ctrl", line_break=True
+        self,
+        mode: Union[str, int] = MODES[0],
+        shortcut_key: str = "Right Ctrl",
+        line_break: bool = True,
+        remove_everything: bool = False,
+        remove_auto_brackets: bool = False,
     ) -> None:
         self.typer = Controller()
         self.listener = None
-        self.__modes = ["normal", "ace-editor"]
-        self.__keys_map = {
-            "Esc": Key.esc,
-            "Right Ctrl": Key.ctrl_r,
-            "Right Shift": Key.shift_r,
-        }
+        self.__modes = MODES
+        self.__keys_map = KEYS_MAP
         self.__line_break = line_break
+        self.__remove_everything = remove_everything
+        self.__remove_auto_brackets = remove_auto_brackets
         self.set_mode(mode)
         self.set_shortcut_key(shortcut_key)
 
@@ -25,6 +35,10 @@ class BDSMTyper:
     def paste_from_clipboard(self):
         print("Pasting from clipboard using mode:", self.__mode)
         text = pyperclip.paste()
+        if self.__remove_everything:
+            with self.typer.pressed(Key.ctrl):
+                self.typer.tap("a")
+            self.typer.tap(Key.backspace)
         if self.__mode == "ace-editor":
             textlines = text.split("\n")
             for line in textlines:
@@ -35,6 +49,11 @@ class BDSMTyper:
                     self.typer.tap(Key.enter)
         else:
             self.typer.type(text)
+        if self.__remove_auto_brackets:
+            with self.typer.pressed(Key.ctrl):
+                with self.typer.pressed(Key.shift):
+                    self.typer.tap(Key.end)
+            self.typer.tap(Key.backspace)
 
     def set_mode(self, mode):
         if mode in self.__modes or type(mode) == int and mode < len(self.__modes):
@@ -55,6 +74,14 @@ class BDSMTyper:
     def set_line_break(self, line_break):
         self.__line_break = bool(line_break)
         print("Line break set to:", bool(line_break))
+    
+    def set_remove_everything(self, remove_everything):
+        self.__remove_everything = bool(remove_everything)
+        print("Remove everything set to:", bool(remove_everything))
+    
+    def set_remove_auto_brackets(self, remove_auto_brackets):
+        self.__remove_auto_brackets = bool(remove_auto_brackets)
+        print("Remove auto brackets set to:", bool(remove_auto_brackets))
 
     def start(self):
         if self.listener:
@@ -85,3 +112,15 @@ class BDSMTyper:
     @property
     def shortcut_keys(self):
         return list(self.__keys_map.keys())
+
+    @property
+    def line_break(self):
+        return self.__line_break
+    
+    @property
+    def remove_everything(self):
+        return self.__remove_everything
+    
+    @property
+    def remove_auto_brackets(self):
+        return self.__remove_auto_brackets
